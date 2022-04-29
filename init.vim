@@ -1,6 +1,12 @@
 let mapleader=' '
 let maplocalleader='\\'
 
+function! SourceIfExists(file)
+  if filereadable(expand(a:file))
+    exe 'source' a:file
+  endif
+endfunction
+
 " OPTIONS --------------------------------------------------------------------- {{{
 set number
 set tabstop=4
@@ -17,10 +23,8 @@ augroup END
 
 " PLUGINS --------------------------------------------------------------------- {{{
 call plug#begin()
-
 Plug 'liuchengxu/vim-which-key'
 Plug 'morhetz/gruvbox'
-
 call plug#end()
 " }}}
 
@@ -34,6 +38,7 @@ nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
 nnoremap <silent> <localleader> :<c-u>WhichKey  ','<CR>
 vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
 
+" buffers
 let g:which_key_map.b = {
       \ 'name' : '+buffer' ,
       \ '1' : ['b1'        , 'buffer 1']        ,
@@ -49,13 +54,17 @@ let g:which_key_map.b = {
 
 " vimrc editting
 let g:which_key_map.v={"name":"+vimrc"}
-nnoremap <leader>ve :split $MYVIMRC<cr>
-let g:which_key_map.v.e="open"
+nnoremap <leader>vb :vsplit $MYVIMRC<cr>
+let g:which_key_map.v.b="open base"
+nnoremap <leader>ve :vsplit $XDG_CONFIG_HOME/nvim/extra/init.vim<cr>
+let g:which_key_map.v.e="open extra"
 nnoremap <leader>vs :source $MYVIMRC<cr>
 let g:which_key_map.v.s="source"
-" }}}
 
+" }}}
 " SCHEMES --------------------------------------------------------------------- {{{
 colorscheme gruvbox
 set background=dark
 " }}}
+
+call SourceIfExists($XDG_CONFIG_HOME . '/nvim/extra/init.vim')
