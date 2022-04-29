@@ -25,6 +25,8 @@ augroup END
 call plug#begin()
 Plug 'liuchengxu/vim-which-key'
 Plug 'morhetz/gruvbox'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 call plug#end()
 " }}}
 
@@ -45,11 +47,11 @@ let g:which_key_map.b = {
       \ '2' : ['b2'        , 'buffer 2']        ,
       \ 'd' : ['bd'        , 'delete-buffer']   ,
       \ 'f' : ['bfirst'    , 'first-buffer']    ,
-      \ 'h' : ['Startify'  , 'home-buffer']     ,
+      \ 'h' : ['startify'  , 'home-buffer']     ,
       \ 'l' : ['blast'     , 'last-buffer']     ,
       \ 'n' : ['bnext'     , 'next-buffer']     ,
       \ 'p' : ['bprevious' , 'previous-buffer'] ,
-      \ '?' : ['Buffers'   , 'fzf-buffer']      ,
+      \ '?' : ['buffers'   , 'fzf-buffer']      ,
       \ }
 
 " vimrc editting
@@ -61,6 +63,14 @@ let g:which_key_map.v.e="open extra"
 nnoremap <leader>vs :source $MYVIMRC<cr>
 let g:which_key_map.v.s="source"
 
+" telescope key maps
+let g:which_key_map.f = {
+		\ 'name': '+find',
+		\ 'f': ['find files'  , 'Telescope find_files'],
+		\ 'g': ['live grep'   , 'Telescope live_grep' ],
+		\ 'b': ['buffers'     , 'Telescope buffers'   ],
+		\ 'h': ['help tags'   , 'Telescope help_tags' ],
+		\}
 " }}}
 " SCHEMES --------------------------------------------------------------------- {{{
 colorscheme gruvbox
