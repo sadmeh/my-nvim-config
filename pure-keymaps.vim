@@ -1,8 +1,11 @@
 let g:mapleader = "\<Space>"
 let g:maplocalleader = ','
-
+nnoremap <localleader> :<c-u>WhichKey  ','<CR>
+vnoremap <localleader> :<c-u>WhichKeyVisual  ','<CR>
 " Define prefix dictionary
 let g:which_key_map =  {}
+call which_key#register('<Space>', "g:which_key_map")
+
 let g:which_key_map.b = {
       \ 'name' : '+buffer' ,
       \ '1' : ['b1'        , 'buffer 1']        ,
@@ -16,16 +19,11 @@ let g:which_key_map.b = {
       \ '?' : ['Buffers'   , 'fzf-buffer']      ,
       \ }
 
-
-nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
-nnoremap <silent> <localleader> :WhichKey ','<CR>
-
 let g:which_key_map.w = { 'name' : 'window' }
 noremap <leader>wu :UndotreeToggle<CR>
 let g:which_key_map.w.u = 'save-file'
 map <leader>wr :NERDTreeFind<cr>
 
-let g:which_key_map.f = { 'name' : 'find' }
 " Find files using Telescope command-line sugar.
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
@@ -127,11 +125,4 @@ xmap <Leader>di <Plug>VimspectorBalloonEval
 " setup mapping to call :LazyGit
 nnoremap <silent> <leader>gg :LazyGit<CR>
 
-nnoremap <Leader>1 :echom "THis is one"<cr>
-let g:which_key_map.1 = "One"
-
-call which_key#register('<Space>', "g:which_key_map")
-
-nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
-vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
 
