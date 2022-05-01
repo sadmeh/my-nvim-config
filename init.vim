@@ -23,7 +23,13 @@ set nowritebackup
 set cmdheight=3
 set updatetime=300
 set shortmess+=c
-
+set clipboard=unnamed
+let test#strategy = "neovim"
+" Some strategies clear the screen before executing the test command, 
+" but you can disable this:
+let g:test#preserve_screen = 1
+let g:test#neovim#start_normal = 1 " If using neovim strategy
+let g:test#basic#start_normal = 1 " If using basic strategy
 noh
 augroup folding
 	autocmd!
@@ -37,7 +43,7 @@ augroup END
 :  autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu | endif
 :augroup END
 " }}}
-
+:
 " PLUGINS --------------------------------------------------------------------- {{{
 call plug#begin()
 Plug 'liuchengxu/vim-which-key'
@@ -54,9 +60,10 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'kdheepak/lazygit.nvim'
 Plug 'puremourning/vimspector'
-
+Plug 'nvim-telescope/telescope-file-browser.nvim'
+Plug 'vim-test/vim-test'
 call plug#end()
-let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-vimlsp', 'coc-lua', 'coc-css', 'coc-emmet', 'coc-eslint', 'coc-java', 'coc-java-debug', 'coc-prettier', 'coc-html', 'coc-sh', 'coc-sql', 'coc-tsserver', 'coc-yaml', 'coc-xml', 'coc-gist', 'coc-highlight', 'coc-html-css-support', 'coc-styled-components', 'coc-htmlhint']
+let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-vimlsp', 'coc-lua', 'coc-css', 'coc-emmet', 'coc-eslint', 'coc-java', 'coc-java-debug', 'coc-prettier', 'coc-html', 'coc-sh', 'coc-sql', 'coc-sqlfluff', 'coc-tsserver', 'coc-yaml', 'coc-xml', 'coc-gist', 'coc-highlight', 'coc-html-css-support', 'coc-styled-components', 'coc-htmlhint']
 
 let g:vimspector_install_gadgets = [ 'java-language-server', 'debugger-for-chrome', 'vscode-node-debug2' ]
 " }}}
@@ -97,6 +104,7 @@ nnoremap <leader>ff <cmd>Telescope find_files<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+nnoremap <leader>ft <cmd>Telescope file_browser<cr>
 
 let g:which_key_map.f = {
 		\ 'name': '+find', 
@@ -106,10 +114,10 @@ let g:which_key_map.f = {
 		\'h': 'help tags' 
 		\}
 " nerdtree key mappings
-nnoremap <leader>tf :NERDTreeFocus<CR>
-nnoremap <leader>tn :NERDTree<CR>
-nnoremap <leader>tt :NERDTreeToggle<CR>
-nnoremap <leader>ts :NERDTreeFind<CR>
+nnoremap <leader>nf :NERDTreeFocus<CR>
+nnoremap <leader>nn :NERDTree<CR>
+nnoremap <leader>nt :NERDTreeToggle<CR>
+nnoremap <leader>ns :NERDTreeFind<CR>
 
 " lazygit key mappins
 nnoremap <silent> <leader>gg :LazyGit<CR>
@@ -274,12 +282,69 @@ nmap <Leader>dj <Plug>VimspectorStepOver
 nmap <leader>ds :CocCommand java.debug.vimspector.start<CR>
 " }}}
 " }}}
+map <silent> <leader>t :TestNearest<CR>
+nmap <silent> <leader>T :TestFile<CR>
+"nmap <silent> <leader>a :TestSuite<CR>
+"nmap <silent> <leader>l :TestLast<CR>
+"nmap <silent> <leader>g :TestVisit<CR>
 
 " SCHEMES --------------------------------------------------------------------- {{{
 colorscheme gruvbox
 set background=dark
 let g:airline_theme="gruvbox"
 " }}}
-
 call SourceIfExists($XDG_CONFIG_HOME . '/nvim/extra/init.vim')
 lua require('init')
+let g:nerd_preview_enabled = 0
+let g:preview_last_buffer  = 0
+
+function! NerdTreePreview()
+  " Only on nerdtree window
+  if (&ft ==# 'nerdtree')
+    " Get filename
+    let l:filename = substitute(getline("."), "^\\s\\+\\|\\s\\+$","","g")
+
+    " Preview if it is not a folder
+    let l:lastchar = strpart(l:filename, strlen(l:filename) - 1, 1)
+    if (l:lastchar != "/" && strpart(l:filename, 0 ,2) != "..")
+
+      let l:store_buffer_to_close = 1
+      if (bufnr(l:filename) > 0)
+        " Don't close if the buffer is already open
+        let l:store_buffer_to_close = 0
+      endif
+
+      " Do preview
+      execute "normal go"
+
+      " Close previews buffer
+      if (g:preview_last_buffer > 0)
+        execute "bwipeout " . g:preview_last_buffer
+        let g:preview_last_buffer = 0
+      endif
+
+      " Set last buffer to close it later
+      if (l:store_buffer_to_close)
+        let g:preview_last_buffer = bufnr(l:filename)
+      endif
+    endif
+  elseif (g:preview_last_buffer > 0)
+    " Close last previewed buffer
+    let g:preview_last_buffer = 0
+  endif
+endfunction
+
+function! NerdPreviewToggle()
+  if (g:nerd_preview_enabled)
+    let g:nerd_preview_enabled = 0
+    augroup nerdpreview
+      autocmd!
+      augroup END
+  else
+    let g:nerd_preview_enabled = 1
+    augroup nerdpreview
+      autocmd!
+      autocmd CursorMoved * nested call NerdTreePreview()
+    augroup END
+  endif
+endfunction
