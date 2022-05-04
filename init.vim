@@ -1,5 +1,5 @@
 let mapleader=' '
-let maplocalleader='\\'
+let maplocalleader=','
 
 function! SourceIfExists(file)
   if filereadable(expand(a:file))
@@ -23,14 +23,43 @@ set nowritebackup
 set cmdheight=3
 set updatetime=300
 set shortmess+=c
-set clipboard=unnamed
-let test#strategy = "neovim"
+set clipboard=unnamedplus
+" let test#strategy = "neovim"
+filetype plugin on
 " Some strategies clear the screen before executing the test command, 
 " but you can disable this:
 let g:test#preserve_screen = 1
 let g:test#neovim#start_normal = 1 " If using neovim strategy
 let g:test#basic#start_normal = 1 " If using basic strategy
 noh
+
+" Create default mappings
+let g:NERDCreateDefaultMappings = 1
+
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+
+" Use compact syntax for prettified multi-line comments
+let g:NERDCompactSexyComs = 1
+
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
+
+" Set a language to use its alternate delimiters by default
+let g:NERDAltDelims_java = 1
+
+" Add your own custom formats or override the defaults
+let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
+
+" Allow commenting and inverting empty lines (useful when commenting a region)
+let g:NERDCommentEmptyLines = 1
+
+" Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
+
+" Enable NERDCommenterToggle to check all selected lines is commented or not 
+let g:NERDToggleCheckAllLines = 1
+
 augroup folding
 	autocmd!
 	autocmd FileType vim setlocal foldmethod=marker
@@ -43,7 +72,6 @@ augroup END
 :  autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu | endif
 :augroup END
 " }}}
-:
 " PLUGINS --------------------------------------------------------------------- {{{
 call plug#begin()
 Plug 'liuchengxu/vim-which-key'
@@ -62,6 +90,7 @@ Plug 'kdheepak/lazygit.nvim'
 Plug 'puremourning/vimspector'
 Plug 'nvim-telescope/telescope-file-browser.nvim'
 Plug 'vim-test/vim-test'
+Plug 'preservim/nerdcommenter'
 call plug#end()
 let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-vimlsp', 'coc-lua', 'coc-css', 'coc-emmet', 'coc-eslint', 'coc-java', 'coc-java-debug', 'coc-prettier', 'coc-html', 'coc-sh', 'coc-sql', 'coc-sqlfluff', 'coc-tsserver', 'coc-yaml', 'coc-xml', 'coc-gist', 'coc-highlight', 'coc-html-css-support', 'coc-styled-components', 'coc-htmlhint']
 
@@ -191,16 +220,16 @@ augroup end
 
 " Applying codeAction to the selected region.
 " Example: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
+xmap <leader>cas  <Plug>(coc-codeaction-selected)
+nmap <leader>cas  <Plug>(coc-codeaction-selected)
 
 " Remap keys for applying codeAction to the current buffer.
-nmap <leader>ac  <Plug>(coc-codeaction)
+nmap <leader>caa  <Plug>(coc-codeaction)
 " Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
+nmap <leader>cqf  <Plug>(coc-fix-current)
 
 " Run the Code Lens action on the current line.
-nmap <leader>cl  <Plug>(coc-codelens-action)
+nmap <leader>cal  <Plug>(coc-codelens-action)
 
 " Map function and class text objects
 " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
@@ -242,23 +271,24 @@ command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.org
 " provide custom statusline: lightline.vim, vim-airline.
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
+let g:which_key_map.c={"name":"+coc"}
 " Mappings for CoCList
 " Show all diagnostics.
-nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+nnoremap <silent><nowait> <space>cd  :<C-u>CocList diagnostics<cr>
 " Manage extensions.
-nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+nnoremap <silent><nowait> <space>ce  :<C-u>CocList extensions<cr>
 " Show commands.
-nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+nnoremap <silent><nowait> <space>cc  :<C-u>CocList commands<cr>
 " Find symbol of current document.
-nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+nnoremap <silent><nowait> <space>co  :<C-u>CocList outline<cr>
 " Search workspace symbols.
-nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+nnoremap <silent><nowait> <space>cs  :<C-u>CocList -I symbols<cr>
 " Do default action for next item.
-nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+nnoremap <silent><nowait> <space>cj  :<C-u>CocNext<CR>
 " Do default action for previous item.
-nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+nnoremap <silent><nowait> <space>ck  :<C-u>CocPrev<CR>
 " Resume latest coc list.
-nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+nnoremap <silent><nowait> <space>cp  :<C-u>CocListResume<CR>
 " }}}
 " vimspector -------------------- {{{
 
