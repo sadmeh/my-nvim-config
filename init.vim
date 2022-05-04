@@ -92,7 +92,7 @@ Plug 'nvim-telescope/telescope-file-browser.nvim'
 Plug 'vim-test/vim-test'
 Plug 'preservim/nerdcommenter'
 call plug#end()
-let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-vimlsp', 'coc-lua', 'coc-css', 'coc-emmet', 'coc-eslint', 'coc-java', 'coc-java-debug', 'coc-prettier', 'coc-html', 'coc-sh', 'coc-sql', 'coc-sqlfluff', 'coc-tsserver', 'coc-yaml', 'coc-xml', 'coc-gist', 'coc-highlight', 'coc-html-css-support', 'coc-styled-components', 'coc-htmlhint']
+let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-vimlsp', 'coc-lua', 'coc-css', 'coc-emmet', 'coc-eslint', 'coc-java', 'coc-java-debug', 'coc-prettier', 'coc-html', 'coc-sh', 'coc-sql', 'coc-sqlfluff', 'coc-tsserver', 'coc-yaml', 'coc-xml', 'coc-gist', 'coc-highlight', 'coc-html-css-support', 'coc-styled-components', 'coc-htmlhint', 'coc-tabnine']
 
 let g:vimspector_install_gadgets = [ 'java-language-server', 'debugger-for-chrome', 'vscode-node-debug2' ]
 " }}}
