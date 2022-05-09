@@ -1,6 +1,8 @@
 {
     "java.jdt.ls.vmargs": "-javaagent:/home/mehdi/lombok-1.18.22.jar",
     "cSpell.userWords": [
-      "JPQL"
+      "JPQL",
+      "RAHSAMDB",
+      "Subselect"
     ]
 }

@@ -24,7 +24,7 @@ set cmdheight=3
 set updatetime=300
 set shortmess+=c
 set clipboard=unnamedplus
-" let test#strategy = "neovim"
+let test#strategy = "neovim"
 filetype plugin on
 " Some strategies clear the screen before executing the test command, 
 " but you can disable this:
@@ -32,7 +32,6 @@ let g:test#preserve_screen = 1
 let g:test#neovim#start_normal = 1 " If using neovim strategy
 let g:test#basic#start_normal = 1 " If using basic strategy
 noh
-
 " Create default mappings
 let g:NERDCreateDefaultMappings = 1
 
@@ -72,6 +71,22 @@ augroup END
 :  autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu | endif
 :augroup END
 " }}}
+
+" let g:startify_custom_header = [
+"                         \'╭━┳━┳━━┳━┳━╮',
+"                         \'┃┃┃┃┃╭╮┃┃┃┃┃',
+"                         \'┃┃┃┃┃┣┫┃┃┃┃┃',
+"                         \'╰┻━┻┻╯╰┻┻━┻╯',
+"                         \]
+" let g:startify_enable_special      = 0
+" let g:startify_files_number        = 8
+" let g:startify_relative_path       = 1
+" let g:startify_change_to_dir       = 1
+" let g:startify_update_oldfiles     = 1
+" let g:startify_session_autoload    = 1
+"  let g:startify_session_persistence = 1
+" let NERDTreeHijackNetrw = 0
+" autocmd VimEnter * Startify
 " PLUGINS --------------------------------------------------------------------- {{{
 call plug#begin()
 Plug 'liuchengxu/vim-which-key'
@@ -91,6 +106,7 @@ Plug 'puremourning/vimspector'
 Plug 'nvim-telescope/telescope-file-browser.nvim'
 Plug 'vim-test/vim-test'
 Plug 'preservim/nerdcommenter'
+Plug 'mhinz/vim-startify'
 call plug#end()
 let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-vimlsp', 'coc-lua', 'coc-css', 'coc-emmet', 'coc-eslint', 'coc-java', 'coc-java-debug', 'coc-prettier', 'coc-html', 'coc-sh', 'coc-sql', 'coc-sqlfluff', 'coc-tsserver', 'coc-yaml', 'coc-xml', 'coc-gist', 'coc-highlight', 'coc-html-css-support', 'coc-styled-components', 'coc-htmlhint', 'coc-tabnine']
 
@@ -147,9 +163,16 @@ nnoremap <leader>nf :NERDTreeFocus<CR>
 nnoremap <leader>nn :NERDTree<CR>
 nnoremap <leader>nt :NERDTreeToggle<CR>
 nnoremap <leader>ns :NERDTreeFind<CR>
-
+let g:which_key_map.n = {
+		\ 'name': '+tree', 
+		\'f': 'focus', 
+		\'n': 'tree', 
+		\'t': 'toggle',
+		\'s': 'find' 
+		\}
 " lazygit key mappins
 nnoremap <silent> <leader>gg :LazyGit<CR>
+let g:which_key_map.g = {"name":"+git"}
 " COC key mappings ------- {{{
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
@@ -203,7 +226,7 @@ endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>lrn <Plug>(coc-rename)
 
 " TODO: find a suitable key mappings for this
 " Formatting selected code.
@@ -220,16 +243,16 @@ augroup end
 
 " Applying codeAction to the selected region.
 " Example: `<leader>aap` for current paragraph
-xmap <leader>cas  <Plug>(coc-codeaction-selected)
-nmap <leader>cas  <Plug>(coc-codeaction-selected)
+xmap <leader>las  <Plug>(coc-codeaction-selected)
+nmap <leader>las  <Plug>(coc-codeaction-selected)
 
 " Remap keys for applying codeAction to the current buffer.
-nmap <leader>caa  <Plug>(coc-codeaction)
+nmap <leader>laa  <Plug>(coc-codeaction)
 " Apply AutoFix to problem on the current line.
-nmap <leader>cqf  <Plug>(coc-fix-current)
+nmap <leader>lqf  <Plug>(coc-fix-current)
 
 " Run the Code Lens action on the current line.
-nmap <leader>cal  <Plug>(coc-codelens-action)
+nmap <leader>lal  <Plug>(coc-codelens-action)
 
 " Map function and class text objects
 " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
@@ -271,24 +294,24 @@ command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.org
 " provide custom statusline: lightline.vim, vim-airline.
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
-let g:which_key_map.c={"name":"+coc"}
+let g:which_key_map.l={"name":"+coc"}
 " Mappings for CoCList
 " Show all diagnostics.
-nnoremap <silent><nowait> <space>cd  :<C-u>CocList diagnostics<cr>
+nnoremap <silent><nowait> <space>ld  :<C-u>CocList diagnostics<cr>
 " Manage extensions.
-nnoremap <silent><nowait> <space>ce  :<C-u>CocList extensions<cr>
+nnoremap <silent><nowait> <space>le  :<C-u>CocList extensions<cr>
 " Show commands.
-nnoremap <silent><nowait> <space>cc  :<C-u>CocList commands<cr>
+nnoremap <silent><nowait> <space>lc  :<C-u>CocList commands<cr>
 " Find symbol of current document.
-nnoremap <silent><nowait> <space>co  :<C-u>CocList outline<cr>
+nnoremap <silent><nowait> <space>lo  :<C-u>CocList outline<cr>
 " Search workspace symbols.
-nnoremap <silent><nowait> <space>cs  :<C-u>CocList -I symbols<cr>
+nnoremap <silent><nowait> <space>ls  :<C-u>CocList -I symbols<cr>
 " Do default action for next item.
-nnoremap <silent><nowait> <space>cj  :<C-u>CocNext<CR>
+nnoremap <silent><nowait> <space>lj  :<C-u>CocNext<CR>
 " Do default action for previous item.
-nnoremap <silent><nowait> <space>ck  :<C-u>CocPrev<CR>
+nnoremap <silent><nowait> <space>lk  :<C-u>CocPrev<CR>
 " Resume latest coc list.
-nnoremap <silent><nowait> <space>cp  :<C-u>CocListResume<CR>
+nnoremap <silent><nowait> <space>lp  :<C-u>CocListResume<CR>
 " }}}
 " vimspector -------------------- {{{
 
